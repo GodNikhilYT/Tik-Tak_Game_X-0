@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic-Tak</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: url('https://c4.wallpaperflare.com/wallpaper/52/86/402/mountains-forest-animals-firewatch-wallpaper-preview.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 5px;
+      justify-content: center;
+      margin-top: 80px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      font-size: 48px;
+      text-align: center;
+      vertical-align: middle;
+      border: 1px solid #333;
+      cursor: pointer;
+    }
+
+    .main-hading {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .main-hading p {
+      font-size: 40px;
+      font-family: cursive;
+      text-shadow: 2px 2px 4px rgb(1, 13, 37);
+    }
+
+    button {
+      width: 17%;
+      padding: 2px 2px 2px 2px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      justify-content: center;
+      font-size: 35px;
+      background: #007bff57;
+      border: none;
+      text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 70px;
+      color: #5e7d9f;
+      text-shadow: 2px 2px 4px rgb(0, 23, 70);
+    }
+  </style>
+</head>
+<body>
+  <div class="main-hading">
+    <p>Welcome To Tik - Tak Game</p>
+  </div>
+  <div class="board">
+    <div class="cell" onclick="makeMove(0, 0)" id="cell00"></div>
+    <div class="cell" onclick="makeMove(0, 1)" id="cell01"></div>
+    <div class="cell" onclick="makeMove(0, 2)" id="cell02"></div>
+    <div class="cell" onclick="makeMove(1, 0)" id="cell10"></div>
+    <div class="cell" onclick="makeMove(1, 1)" id="cell11"></div>
+    <div class="cell" onclick="makeMove(1, 2)" id="cell12"></div>
+    <div class="cell" onclick="makeMove(2, 0)" id="cell20"></div>
+    <div class="cell" onclick="makeMove(2, 1)" id="cell21"></div>
+    <div class="cell" onclick="makeMove(2, 2)" id="cell22"></div>
+  </div>
+  <p id="message"></p>
+  <div class="bt-reset">
+    <button id="bt-reset" onclick="resetGame()">Reset Game</button>
+  </div>
+  <script>
+    let board = [
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ];
+    let currentPlayer = 'X';
+    let gameFinished = false;
+
+    function makeMove(row, col) {
+      if (!gameFinished && board[row][col] === '') {
+        board[row][col] = currentPlayer;
+        document.getElementById(`cell${row}${col}`).innerText = currentPlayer;
+        checkWinner();
+        currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+      }
+    }
+
+    function checkWinner() {
+      const winningCombos = [
+        // Rows
+        [[0, 0], [0, 1], [0, 2]],
+        [[1, 0], [1, 1], [1, 2]],
+        [[2, 0], [2, 1], [2, 2]],
+        // Columns
+        [[0, 0], [1, 0], [2, 0]],
+        [[0, 1], [1, 1], [2, 1]],
+        [[0, 2], [1, 2], [2, 2]],
+        // Diagonals
+        [[0, 0], [1, 1], [2, 2]],
+        [[0, 2], [1, 1], [2, 0]]
+      ];
+
+      for (const combo of winningCombos) {
+        const [a, b, c] = combo;
+        if (board[a[0]][a[1]] && board[a[0]][a[1]] === board[b[0]][b[1]] && board[a[0]][a[1]] === board[c[0]][c[1]]) {
+          document.getElementById("message").innerText = `${currentPlayer} wins!`;
+          gameFinished = true;
+          return;
+        }
+      }
+
+      if (board.flat().every(cell => cell !== '')) {
+        document.getElementById("message").innerText = "It's a draw!";
+        gameFinished = true;
+      }
+    }
+
+    function resetGame() {
+      // Clear the board
+      board = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+      ];
+
+      // Clear cell contents on the UI
+      const cells = document.getElementsByClassName('cell');
+      for (const cell of cells) {
+        cell.innerText = '';
+      }
+
+      // Reset game status
+      currentPlayer = 'X';
+      gameFinished = false;
+      document.getElementById("message").innerText = '';
+    }
+  </script>
+</body>
+</html>
